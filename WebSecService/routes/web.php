@@ -1,16 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WebSecController;
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/even-odd', function () {
-    return view('even-odd');
+
+
+Route::get('/register', function () {
+    return view('register');
 });
-Route::get('/prime', function () {
-    return view('prime-numbers');
+Route::post('/register', [WebSecController::class, 'register']);
+
+Route::get('/login', function () {
+    return view('login');
 });
-Route::get('/multiplication', function () {
-    return view('multiplication-table');
-});
+Route::post('/login', [WebSecController::class, 'login']);
+
+Route::post('/logout', [WebSecController::class, 'logout'])->name('logout');
