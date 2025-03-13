@@ -19,13 +19,13 @@
             <a class="nav-link" href="{{ url('/') }}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('/even-odd') }}">Even Numbers</a>
+            <a class="nav-link" href="{{ url('/register') }}">Register</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('/prime') }}">Prime Numbers</a>
+            <a class="nav-link" href="{{ url('/login') }}">Login</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url('/multiplication') }}">Multiplication Table</a>
+            <a class="nav-link" href="{{ url('/logout') }}">Logout</a>
           </li>
         </ul>
       </div>
