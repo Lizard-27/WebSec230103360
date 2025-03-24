@@ -15,7 +15,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="{{ url('/') }}">Home</a>
           </li>
           <li class="nav-item">
@@ -26,7 +26,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ url('/multable') }}">Multiplication Table</a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="{{ route('products_list') }}">Products</a>
           </li>
@@ -35,11 +35,16 @@
             <a class="nav-link" href="{{ route('users') }}">Users</a>
           </li>
           @endcan
+          @can('show_students')
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('students') }}">students</a>
+          </li>
+          @endcan
         </ul>
         <ul class="navbar-nav">
           @auth
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('profile') }}">{{ auth()->user()->name }}</a>
+            <a class="nav-link" href="{{ route('profile') }}">hello {{ auth()->user()->name }}</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('do_logout') }}">Logout</a>
