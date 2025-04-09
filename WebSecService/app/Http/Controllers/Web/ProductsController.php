@@ -55,11 +55,21 @@ class ProductsController extends Controller {
 		$user->credit -= $product->price;
 		$user->save();
 	
+		// ✅ Record the purchase
+		$user->purchases()->attach($product->id);
+	
 		return redirect()->back()->with('success', 'Purchase successful!');
 	}
 	
+
 	
+	public function myProducts()
+	{
+		$products = auth()->user()->purchases()->get();
+		return view('products.purchases', compact('products'));
+	}
 	
+
 
 	public function edit(Request $request, Product $product = null) {
 
@@ -88,12 +98,17 @@ class ProductsController extends Controller {
 		return redirect()->route('products_list');
 	}
 
-	public function delete(Request $request, Product $product) {
-
-		if(!auth()->user()->hasPermissionTo('delete_products')) abort(401);
-
+	public function delete(Request $request, Product $product)
+	{
+		$user = auth()->user();
+	
+		if (!$user || !$user->hasPermissionTo('delete_products')) {
+			abort(403); // or redirect()->route('login');
+		}
+	
 		$product->delete();
-
+	
 		return redirect()->route('products_list');
 	}
+	
 } 

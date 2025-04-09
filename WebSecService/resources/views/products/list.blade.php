@@ -26,6 +26,13 @@
     </div>
 </div>
 
+<!-- My Purchases Button -->
+@if(auth()->check())
+    <div class="col col-2 mt-2">
+    <a href="{{ route('my-products') }}" class="btn btn-info form-control">My Purchases</a>
+    </div>
+@endif
+
 <form>
     <div class="row">
         <div class="col col-sm-2">
@@ -106,8 +113,6 @@
                     @else
                         <a href="{{ route('login') }}" class="btn btn-warning">Login to Buy</a>
                     @endif
-
-
                 </div>
             </div>
         </div>

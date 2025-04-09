@@ -14,4 +14,9 @@ class Product extends Model  {
         'description',
         'photo'
     ];
+public function buyers()
+{
+    return $this->belongsToMany(User::class)->withTimestamps();
+}
+    
 }

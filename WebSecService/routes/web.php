@@ -24,12 +24,18 @@ Route::post('users/save_password/{user}', [UsersController::class, 'savePassword
 Route::get('students', [StudentsController::class, 'list'])->name('students_list');
 
 
+Route::get('/my-products', [ProductsController::class, 'myProducts'])
+     ->middleware('auth')
+     ->name('my-products');
 
 Route::get('products', [ProductsController::class, 'list'])->name('products_list');
 Route::post('/buy-product/{id}', [ProductsController::class, 'buyProduct'])->name('buy_product');
 Route::get('products/edit/{product?}', [ProductsController::class, 'edit'])->name('products_edit');
 Route::post('products/save/{product?}', [ProductsController::class, 'save'])->name('products_save');
-Route::get('products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
+});
+
 
 Route::get('/', function () {
     return view('welcome');
