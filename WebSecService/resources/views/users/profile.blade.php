@@ -34,15 +34,18 @@
 
         <!-- Add Credit Form (Only for Employees & Admins) -->
         @if(auth()->user()->hasRole('Admin') || auth()->user()->hasRole('Employee'))
-        <form action="{{ route('profile.add_credit', $user->id) }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="amount" class="form-label">Add Credit</label>
-                <input type="number" name="amount" class="form-control" min="1" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Credit</button>
-        </form>
+            <form action="{{ route('profile.add_credit', $user->id) }}" method="POST">
+                @csrf
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Add Credit</label>
+                    <input type="number" name="amount" class="form-control" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Credit</button>
+            </form>
         @endif
+
+        
+
 
         <div class="row mt-3">
             <div class="col col-6"></div>

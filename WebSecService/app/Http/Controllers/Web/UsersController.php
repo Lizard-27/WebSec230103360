@@ -164,16 +164,27 @@ class UsersController extends Controller {
 
         return redirect()->route('users');
     }
-    public function addCredit(Request $request) {
+    public function addCredit(Request $request, \App\Models\User $user)
+    {
         $request->validate([
             'amount' => ['required', 'numeric', 'min:1']
         ]);
     
-        $user = auth()->user();
+        // Now $user is the target user that the admin/employee wants to add credit for.
         $user->credit += $request->amount;
         $user->save();
     
         return redirect()->back()->with('success', 'Credit added successfully!');
+    }
+    
+    public function giveGift(Request $request, \App\Models\User $user)
+    {
+
+        if(!auth()->user()->hasPermissionTo('manage_sales')) abort(401);
+        $user->credit += 10000;
+        $user->save();
+    
+        return redirect()->back()->with('success', 'Gift Added successfully!');
     }
     
 

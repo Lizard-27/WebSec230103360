@@ -49,7 +49,10 @@
           @can('admin_users')
           <a class="btn btn-primary" href='{{route('edit_password', [$user->id])}}'>Change Password</a>
           @endcan
-          @can('delete_users')
+          @can('manage_sales')
+          <a class="btn btn-primary" method="POST" href='{{route('give_gift', [$user->id])}}'>Give a Gift</a>
+          @endcan
+          @can('edit_users')
           <a class="btn btn-danger" href='{{route('users_delete', [$user->id])}}'>Delete</a>
           @endcan
         </td>
