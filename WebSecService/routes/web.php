@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\StudentsController;
+use App\Http\Controllers\Web\ForgotPasswordController;
 
 Route::get('register', [UsersController::class, 'register'])->name('register');
 Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
@@ -11,6 +12,9 @@ Route::get('login', [UsersController::class, 'login'])->name('login');
 Route::post('login', [UsersController::class, 'doLogin'])->name('do_login');
 Route::get('forgot_password', [UsersController::class, 'forgotPassword'])->name('forgot_password');
 Route::post('forgot_password', [UsersController::class, 'sendTempPassword'])->name('forgot_password.send');
+Route::get('send-login-link', [UsersController::class, 'showLoginLinkForm'])->name('send_login_link.form');
+Route::post('send-login-link', [UsersController::class, 'sendLoginLink'])->name('send_login_link.send');
+Route::get('loginn', [UsersController::class, 'loginWithLink'])->name('login.link');
 Route::get('logout', [UsersController::class, 'doLogout'])->name('do_logout');
 Route::get('users', [UsersController::class, 'list'])->name('users');
 Route::get('profile/{user?}', [UsersController::class, 'profile'])->name('profile');
@@ -21,6 +25,8 @@ Route::get('users/delete/{user}', [UsersController::class, 'delete'])->name('use
 Route::post('/profile/add_credit/{user}', [UsersController::class, 'addCredit'])->name('profile.add_credit');
 Route::get('users/edit_password/{user?}', [UsersController::class, 'editPassword'])->name('edit_password');
 Route::post('users/save_password/{user}', [UsersController::class, 'savePassword'])->name('save_password');
+
+
 
 
 

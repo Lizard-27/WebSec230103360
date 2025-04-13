@@ -26,6 +26,10 @@
         <a href="{{ route('forgot_password') }}">Forgot Password?</a>
       </div>
 
+      <div class="mb-2 text-end">
+      <a href="{{ route('send_login_link.form') }}">Send a Login Link?</a>
+      </div>
+
 
       <div class="form-group mb-2">
         <button type="submit" class="btn btn-primary">Login</button>

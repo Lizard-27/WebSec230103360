@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers\Web;
 
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\URL;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TemporaryPasswordMail;
@@ -19,6 +22,71 @@ use App\Models\User;
 class UsersController extends Controller {
 
 	use ValidatesRequests;
+    public function showLoginLinkForm()
+    {
+        return view('users.send-login-link');
+    }
+
+    // Send the login link to the user's email
+    public function sendLoginLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Generate a unique token for the user
+        $token = Str::random(60); // You can customize the token length
+        $encryptedToken = Crypt::encryptString($token); // Encrypt the token
+
+        // You can optionally store the token in the database (optional) for expiry checks
+
+        // Create a login URL with the token
+        $loginUrl = URL::to('/loginn') . '?token=' . $encryptedToken . '&email=' . urlencode($request->email);
+
+        // Send an email with the login URL
+        // Send an email with the login URL
+        Mail::send([], [], function ($message) use ($user, $loginUrl) {
+            $message->to($user->email)
+                    ->subject('Login Link')
+                    ->html("Click the following link to log in: <a href=\"$loginUrl\">Login</a>");
+        });
+
+
+        return back()->with('status', 'We have emailed you a login link!');
+    }
+
+    // Handle the login request using the login link (token validation)
+    public function loginWithLink(Request $request)
+    {
+        if ($request->has('token') && $request->has('email')) {
+            $token = $request->token;
+            $email = $request->email;
+
+            try {
+                // Decrypt the token to validate it
+                $decryptedToken = Crypt::decryptString($token);
+
+                // Find the user with the provided email
+                $user = User::where('email', $email)->first();
+
+                if ($user) {
+                    // Log the user in directly
+                    Auth::login($user);
+
+                    // Redirect to the home page or dashboard
+                    return redirect('/');
+                }
+
+            } catch (\Exception $e) {
+                // Token decryption failed or user not found
+                return redirect()->route('login')->withErrors('Invalid or expired login link.');
+            }
+        }
+
+        return redirect()->route('login')->withErrors('Missing or invalid parameters.');
+    }
 
     public function list(Request $request) {
         if (!auth()->user()->hasPermissionTo('show_users')) {
