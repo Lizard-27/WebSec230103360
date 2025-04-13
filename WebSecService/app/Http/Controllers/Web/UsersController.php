@@ -1,6 +1,9 @@
 <?php
 namespace App\Http\Controllers\Web;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TemporaryPasswordMail;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\Request;
@@ -67,21 +70,34 @@ class UsersController extends Controller {
         return redirect('/products')->with('success', 'Registration successful!');
     }
     
-
     public function login(Request $request) {
         return view('users.login');
-    }
-
+    } 
+    
     public function doLogin(Request $request) {
-    	
-    	if(!Auth::attempt(['email' => $request->email, 'password' => $request->password]))
-            return redirect()->back()->withInput($request->input())->withErrors('Invalid login information.');
-
-        $user = User::where('email', $request->email)->first();
-        Auth::setUser($user);
-
+        $credentials = [
+            'email'    => $request->email,
+            'password' => $request->password,
+        ];
+    
+        if (!Auth::attempt($credentials)) {
+            return redirect()->back()
+                             ->withInput($request->input())
+                             ->withErrors('Invalid login information.');
+        }
+    
+        $user = Auth::user();
+    
+        // Check if the user logged in with a temporary password.
+        if ($user->temp_password) {
+            // Redirect to the change password page (e.g., route 'edit_password')
+            return redirect()->route('edit_password', $user->id)
+                             ->with('info', 'You must change your temporary password.');
+        }
+    
         return redirect('/');
     }
+   
 
     public function doLogout(Request $request) {
     	
@@ -108,6 +124,10 @@ class UsersController extends Controller {
         }
 
         return view('users.profile', compact('user', 'permissions'));
+    }
+
+    public function forgotPassword() {
+        return view('users.forgot_password');
     }
 
     public function edit(Request $request, User $user = null) {
@@ -199,27 +219,56 @@ class UsersController extends Controller {
     }
 
     public function savePassword(Request $request, User $user) {
-
-        if(auth()->id()==$user?->id) {
-            
-            $this->validate($request, [
+        if (auth()->id() === $user->id) {
+            $request->validate([
+                'old_password' => 'required',
                 'password' => ['required', 'confirmed', Password::min(8)->numbers()->letters()->mixedCase()->symbols()],
             ]);
-
-            if(!Auth::attempt(['email' => $user->email, 'password' => $request->old_password])) {
-                
+    
+            if (!Auth::attempt(['email' => $user->email, 'password' => $request->old_password])) {
                 Auth::logout();
-                return redirect('/');
+                return redirect('/')->withErrors('Your old password is incorrect.');
             }
+    
+            // Update the user's password.
+            $user->password = bcrypt($request->password);
+            // If you're using a temporary password flag, clear it now.
+            $user->temp_password = false;
+            $user->save();
+    
+            return redirect()->route('profile', ['user' => $user->id])
+                             ->with('success', 'Password updated successfully.');
+        } else {
+            abort(403, 'Unauthorized action.');
         }
-        else if(!auth()->user()->hasPermissionTo('edit_users')) {
-
-            abort(401);
-        }
-
-        $user->password = bcrypt($request->password); //Secure
-        $user->save();
-
-        return redirect(route('profile', ['user'=>$user->id]));
     }
+
+    public function sendTempPassword(Request $request) {
+        // 1. Validate that the email was submitted and is in correct format
+        $request->validate(['email' => 'required|email']);
+    
+        // 2. Find the user with the submitted email
+        $user = \App\Models\User::where('email', $request->email)->first();
+    
+        if (!$user) {
+            // 3. If user not found, show error
+            return back()->withErrors(['email' => 'No user found with that email.']);
+        }
+    
+        // 4. Generate a temporary password
+        $tempPassword = Str::random(10);
+    
+        // 5. Set it as their password and mark them with a temp flag
+        $user->password = bcrypt($tempPassword);
+        $user->temp_password = true;
+        $user->save();
+    
+        // 6. Send the email using the Mailable class
+        Mail::to($user->email)->send(new TemporaryPasswordMail($tempPassword));
+    
+        // 7. Redirect to login with success message
+        return redirect()->route('login')->with('success', 'Temporary password sent to your email.');
+    }
+    
+    
 } 

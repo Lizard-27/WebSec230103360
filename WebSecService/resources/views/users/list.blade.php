@@ -49,9 +49,10 @@
           @can('admin_users')
           <a class="btn btn-primary" href='{{route('edit_password', [$user->id])}}'>Change Password</a>
           @endcan
-          @can('manage_sales')
-          <a class="btn btn-primary" method="POST" href='{{route('give_gift', [$user->id])}}'>Give a Gift</a>
-          @endcan
+          <form action="{{ route('give_gift', $user->id) }}" method="POST" style="display:inline-block; margin-top: 5px;">
+              @csrf
+              <button class="btn btn-success">Give Gift</button>
+          </form>
           @can('edit_users')
           <a class="btn btn-danger" href='{{route('users_delete', [$user->id])}}'>Delete</a>
           @endcan
