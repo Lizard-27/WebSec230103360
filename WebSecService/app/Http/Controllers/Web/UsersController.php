@@ -27,7 +27,6 @@ class UsersController extends Controller {
         return view('users.send-login-link');
     }
 
-    // Send the login link to the user's email
     public function sendLoginLink(Request $request)
     {
         $request->validate([
@@ -36,17 +35,11 @@ class UsersController extends Controller {
 
         $user = User::where('email', $request->email)->first();
 
-        // Generate a unique token for the user
-        $token = Str::random(60); // You can customize the token length
-        $encryptedToken = Crypt::encryptString($token); // Encrypt the token
+        $token = Str::random(60); 
+        $encryptedToken = Crypt::encryptString($token); 
 
-        // You can optionally store the token in the database (optional) for expiry checks
-
-        // Create a login URL with the token
         $loginUrl = URL::to('/loginn') . '?token=' . $encryptedToken . '&email=' . urlencode($request->email);
 
-        // Send an email with the login URL
-        // Send an email with the login URL
         Mail::send([], [], function ($message) use ($user, $loginUrl) {
             $message->to($user->email)
                     ->subject('Login Link')
@@ -57,7 +50,6 @@ class UsersController extends Controller {
         return back()->with('status', 'We have emailed you a login link!');
     }
 
-    // Handle the login request using the login link (token validation)
     public function loginWithLink(Request $request)
     {
         if ($request->has('token') && $request->has('email')) {
@@ -65,22 +57,19 @@ class UsersController extends Controller {
             $email = $request->email;
 
             try {
-                // Decrypt the token to validate it
                 $decryptedToken = Crypt::decryptString($token);
 
-                // Find the user with the provided email
                 $user = User::where('email', $email)->first();
 
                 if ($user) {
-                    // Log the user in directly
+
                     Auth::login($user);
 
-                    // Redirect to the home page or dashboard
+
                     return redirect('/');
                 }
 
             } catch (\Exception $e) {
-                // Token decryption failed or user not found
                 return redirect()->route('login')->withErrors('Invalid or expired login link.');
             }
         }
