@@ -28,6 +28,9 @@ Route::post('users/save_password/{user}', [UsersController::class, 'savePassword
 
 
 
+Route::get('/auth/google', [UsersController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [UsersController::class, 'handleGoogleCallback']);
+
 
 
 Route::get('students', [StudentsController::class, 'list'])->name('students_list');

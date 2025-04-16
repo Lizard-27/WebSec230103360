@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Web;
 
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
+use Laravel\Socialite\Facades\Socialite;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
@@ -97,7 +98,34 @@ class UsersController extends Controller {
     
         return view('users.list', compact('users'));
     }
-       
+
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $user = User::firstOrCreate([
+                'email' => $googleUser->getEmail(),
+            ], [
+                'name' => $googleUser->getName(),
+                'password' => bcrypt(Str::random(16)), // dummy password
+            ]);
+
+            Auth::login($user);
+
+            return redirect('/'); // or your dashboard
+
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors(['msg' => 'Google login failed.']);
+        }
+    }
+ 
 
 	public function register(Request $request) {
         return view('users.register');

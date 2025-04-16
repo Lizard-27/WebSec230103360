@@ -21,6 +21,10 @@
         <label for="model" class="form-label">Password:</label>
         <input type="password" class="form-control" placeholder="password" name="password" required>
       </div>
+      <div class="mb-3 text-center">
+        <a href="{{ route('google.login') }}" class="btn btn-danger">Login with Google</a>
+      </div>
+
 
       <div class="mb-2 text-end">
         <a href="{{ route('forgot_password') }}">Forgot Password?</a>
