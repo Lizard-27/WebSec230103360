@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\ProductsController;
 use App\Http\Controllers\Web\UsersController;
 use App\Http\Controllers\Web\StudentsController;
 use App\Http\Controllers\Web\ForgotPasswordController;
+use Illuminate\Support\Facades\DB;
 
 Route::get('register', [UsersController::class, 'register'])->name('register');
 Route::post('register', [UsersController::class, 'doRegister'])->name('do_register');
@@ -53,21 +54,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/sqli', function (Request $request) {
-//     $table = $request->'query('table');
-//     DB::unprepared->("DROP TABLE $table")
-//     return redirect('/');
-// });
+Route::get('/sqli', function (Request $request) {
+    $table = $request->query('table');
+    DB::unprepared("DROP TABLE $table");
+    return redirect('/');
+});
 
-Route::get('/collect', function (Request $request){
+
+Route::get('/collect', function (Request $request) {
     $name = $request->query('name');
     $credit = $request->query('credit');
 
-    return response('data collected',200)
-        ->header('Access-Control-Allow-Orgin', '*')
+    return response('data collected', 200)
+        ->header('Access-Control-Allow-Origin', '*') 
         ->header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
         ->header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
 });
+
 
 Route::get('/multable', function (Request $request) {
     $j = $request->number??5;

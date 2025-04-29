@@ -29,33 +29,43 @@
 <!-- My Purchases Button -->
 @if(auth()->check())
     <div class="col col-2 mt-2">
-    <a href="{{ route('my-products') }}" class="btn btn-info form-control">My Purchases</a>
+        <a href="{{ route('my-products') }}" class="btn btn-info form-control">My Purchases</a>
     </div>
 @endif
 
 <form>
     <div class="row">
+        @if (!empty(request()->keywords))
+            <div class="col-12">
+                <div class="card mt-2">
+                    <div class="card-body">
+                        View search results for: <span class="fw-bold">{{ request()->keywords }}</span>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="col col-sm-2">
             <input name="keywords" type="text" class="form-control" placeholder="Search Keywords" value="{{ request()->keywords }}" />
         </div>
         <div class="col col-sm-2">
-            <input name="min_price" type="numeric" class="form-control" placeholder="Min Price" value="{{ request()->min_price }}"/>
+            <input name="min_price" type="number" class="form-control" placeholder="Min Price" value="{{ request()->min_price }}" />
         </div>
         <div class="col col-sm-2">
-            <input name="max_price" type="numeric" class="form-control" placeholder="Max Price" value="{{ request()->max_price }}"/>
+            <input name="max_price" type="number" class="form-control" placeholder="Max Price" value="{{ request()->max_price }}" />
         </div>
         <div class="col col-sm-2">
             <select name="order_by" class="form-select">
-                <option value="" {{ request()->order_by==""?"selected":"" }} disabled>Order By</option>
-                <option value="name" {{ request()->order_by=="name"?"selected":"" }}>Name</option>
-                <option value="price" {{ request()->order_by=="price"?"selected":"" }}>Price</option>
+                <option value="" {{ request()->order_by=="" ? "selected" : "" }} disabled>Order By</option>
+                <option value="name" {{ request()->order_by=="name" ? "selected" : "" }}>Name</option>
+                <option value="price" {{ request()->order_by=="price" ? "selected" : "" }}>Price</option>
             </select>
         </div>
         <div class="col col-sm-2">
             <select name="order_direction" class="form-select">
-                <option value="" {{ request()->order_direction==""?"selected":"" }} disabled>Order Direction</option>
-                <option value="ASC" {{ request()->order_direction=="ASC"?"selected":"" }}>ASC</option>
-                <option value="DESC" {{ request()->order_direction=="DESC"?"selected":"" }}>DESC</option>
+                <option value="" {{ request()->order_direction=="" ? "selected" : "" }} disabled>Order Direction</option>
+                <option value="ASC" {{ request()->order_direction=="ASC" ? "selected" : "" }}>ASC</option>
+                <option value="DESC" {{ request()->order_direction=="DESC" ? "selected" : "" }}>DESC</option>
             </select>
         </div>
         <div class="col col-sm-1">
@@ -120,3 +130,4 @@
 @endforeach
 
 @endsection
+
