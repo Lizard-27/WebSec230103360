@@ -82,12 +82,12 @@
         <div class="card-body">
             <div class="row">
                 <div class="col col-sm-12 col-lg-4">
-                    <img src="{{ asset("images/$product->photo") }}" class="img-thumbnail" alt="{{ $product->name }}" width="100%">
+                    <img src="{{ asset("images/$product->photo") }}" class="img-thumbnail" alt="{!! $product->name !!}" width="100%">
                 </div>
                 <div class="col col-sm-12 col-lg-8 mt-3">
                     <div class="row mb-2">
                         <div class="col-8">
-                            <h3>{{ $product->name }}</h3>
+                            <h3>{!! $product->name !!}</h3>
                         </div>
                         <div class="col col-2">
                             @can('edit_products')
@@ -102,7 +102,7 @@
                     </div>
 
                     <table class="table table-striped">
-                        <tr><th width="20%">Name</th><td>{{ $product->name }}</td></tr>
+                        <tr><th width="20%">Name</th><td>{!! $product->name !!}</td></tr>
                         <tr><th>Model</th><td>{{ $product->model }}</td></tr>
                         <tr><th>Code</th><td>{{ $product->code }}</td></tr>
                         <tr><th>Price</th><td>${{ number_format($product->price, 2) }}</td></tr>
