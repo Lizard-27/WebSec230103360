@@ -102,7 +102,7 @@
                     </div>
 
                     <table class="table table-striped">
-                        <tr><th width="20%">Name</th><td>{!! $product->name !!}</td></tr>
+                        <tr><th width="20%">Name</th><td>{{ $product->name }}</td></tr>
                         <tr><th>Model</th><td>{{ $product->model }}</td></tr>
                         <tr><th>Code</th><td>{{ $product->code }}</td></tr>
                         <tr><th>Price</th><td>${{ number_format($product->price, 2) }}</td></tr>
