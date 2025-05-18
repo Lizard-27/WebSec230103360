@@ -30,6 +30,12 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ route('products_list') }}">Products</a>
           </li>
+          <ul class="navbar-nav me-auto">
+            <!-- … existing links … -->
+            <li class="nav-item">
+              <a class="nav-link" href="{{ route('crypto.form') }}">Crypto</a>
+            </li>
+          </ul>
           @can('show_users')
           <li class="nav-item">
             <a class="nav-link" href="{{ route('users') }}">Users</a>

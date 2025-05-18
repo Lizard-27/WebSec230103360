@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Web;
 
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use DB;
@@ -11,6 +13,51 @@ use App\Models\Product;
 class ProductsController extends Controller {
 
 	use ValidatesRequests;
+
+
+	    public function showCryptoForm()
+    {
+        return view('products.crypto', [
+            'text'   => null,
+            'mode'   => null,
+            'result' => null,
+        ]);
+    }
+
+    /**
+     * Handle the form submission.
+     */
+    public function handleCrypto(Request $request)
+    {
+        $request->validate([
+            'text' => 'required|string',
+            'mode' => 'required|in:encrypt,decrypt,hash',
+        ]);
+
+        $text   = $request->input('text');
+        $mode   = $request->input('mode');
+        $result = '';
+
+        switch ($mode) {
+            case 'encrypt':
+                $result = Crypt::encryptString($text);
+                break;
+
+            case 'decrypt':
+                try {
+                    $result = Crypt::decryptString($text);
+                } catch (\Throwable $e) {
+                    $result = 'Invalid encrypted string.';
+                }
+                break;
+
+            case 'hash':
+                $result = Hash::make($text);
+                break;
+        }
+
+        return view('products.crypto', compact('text', 'mode', 'result'));
+    }
 
 	public function __construct()
     {

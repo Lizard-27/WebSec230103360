@@ -48,6 +48,8 @@ Route::post('products/save/{product?}', [ProductsController::class, 'save'])->na
 Route::middleware(['auth'])->group(function () {
     Route::get('/products/delete/{product}', [ProductsController::class, 'delete'])->name('products_delete');
 });
+Route::get('/crypto',   [ProductsController::class, 'showCryptoForm'])->name('crypto.form');
+Route::post('/crypto',  [ProductsController::class, 'handleCrypto'])->name('crypto.handle');
 
 
 Route::get('/', function () {
